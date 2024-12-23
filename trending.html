@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trending News</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Global Styling */
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background: #f4f4f4;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #4caf50;
+            padding: 10px 20px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            color: white;
+        }
+
+        .navbar nav a {
+            margin: 0 10px;
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .navbar nav a:hover {
+            color: #d4ffda;
+        }
+
+        .trending-container {
+            margin: 120px auto;
+            max-width: 1200px;
+            text-align: center;
+        }
+
+        .trending-container h1 {
+            font-size: 36px;
+            color: #4caf50;
+            margin-bottom: 30px;
+            position: relative;
+            display: inline-block;
+            padding: 10px 20px;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* News Cards Styling */
+        .news-item {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            background: white;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .news-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .news-item img {
+            max-width: 150px;
+            height: auto;
+            margin-right: 20px;
+            border-radius: 10px;
+        }
+
+        .news-item h2 {
+            font-size: 20px;
+            margin: 0 0 10px;
+            color: #333;
+        }
+
+        .news-item p {
+            font-size: 14px;
+            margin: 0 0 10px;
+        }
+
+        .news-item a {
+            color: #4caf50;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .news-item a:hover {
+            text-decoration: underline;
+        }
+
+        /* Upcoming Magazines Section */
+        .upcoming-magazines {
+            margin-top: 30px;
+            padding: 20px;
+            background: #ff7eb3;
+            color: white;
+            border-radius: 10px;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .upcoming-magazines h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo">Trending News</div>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="magazine.html">Magazines</a>
+            <a href="newspaper.html">Newspapers</a>
+            <a href="subscription.html">Subscriptions</a>
+        </nav>
+    </div>
+
+    <div class="trending-container">
+        <h1>Latest Trending News</h1>
+        <div id="news-container">
+            <!-- Real-time news will appear here -->
+        </div>
+    </div>
+
+    <div class="upcoming-magazines">
+        <h2>Upcoming Magazines</h2>
+        <ul id="magazine-list">
+            <li>UPSIDE DOWN - Release Date: 2024-01-15</li>
+            <li>THE DAWN - Release Date: 2024-02-10</li>
+            <li>LIFESTYLE - Release Date: 2024-03-05</li>
+        </ul>
+    </div>
+
+    <script>
+        async function fetchTrendingNews() {
+            const apiKey = 'bf61fc4afde44d75ad867244118312a7'; // Replace with your API key
+            const url = `https://newsapi.org/v2/top-headlines?country=us&apiKey=${apiKey}`;
+            
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                const newsContainer = document.getElementById('news-container');
+                
+                if (data.articles) {
+                    data.articles.forEach(article => {
+                        const newsItem = document.createElement('div');
+                        newsItem.classList.add('news-item');
+                        newsItem.innerHTML = `
+                            <img src="${article.urlToImage || 'https://via.placeholder.com/150'}" alt="News Image">
+                            <div>
+                                <h2>${article.title}</h2>
+                                <p>${article.description || 'No description available.'}</p>
+                                <a href="${article.url}" target="_blank">Read more</a>
+                            </div>
+                        `;
+                        newsContainer.appendChild(newsItem);
+                    });
+                } else {
+                    newsContainer.innerHTML = '<p>No news available at the moment.</p>';
+                }
+            } catch (error) {
+                console.error('Error fetching news:', error);
+                document.getElementById('news-container').innerHTML = '<p>Failed to load news. Please try again later.</p>';
+            }
+        }
+
+        fetchTrendingNews();
+    </script>
+</body>
+</html>
